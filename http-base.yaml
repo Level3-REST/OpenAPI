@@ -1,0 +1,22 @@
+openapi: 3.0.2
+info:
+  title: HTTP base specifications
+  description: Shared components described in HTTP/1.1
+  version: 0.0.0
+components:
+  parameters:
+    HTTP-date:
+      name: HTTP-date
+      in: header
+      description: See [HTTP 1.1 date format](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.18)
+      schema:
+        type: string
+        pattern: (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0123]\d (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d\d\d\d [012]\d:[012345]\d:[012345]\d GMT
+    Last-Modified:
+      description: See [http 1.1 Last-Modified header](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29)
+        schema:
+          $ref: '#/components/parameters/HTTP-date'
+    If-Modified-Since:
+      description: See [HTTP 1.1 If-Modified-Since](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25)
+      schema:
+        $ref: '#/components/parameters/HTTP-date'
