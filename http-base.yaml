@@ -1,22 +1,57 @@
 openapi: 3.0.2
 info:
-  title: HTTP base specifications
+  title: HTTP/1.1 base specifications
   description: Shared components described in HTTP/1.1
   version: 0.0.0
 components:
-  parameters:
+  schemas:
+    wildcard:
+      description: The wildcard character
+      type: string
+      pattern: : '\*'
+    entity-tag:
+      description: See [HTTP/1.1 entity-tag format](https://tools.ietf.org/html/rfc2616#section-3.11)
+      type: string
+      pattern: '(?:W/)"?.*"'
     HTTP-date:
-      name: HTTP-date
-      in: header
-      description: See [HTTP 1.1 date format](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.18)
-      schema:
-        type: string
-        pattern: (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0123]\d (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d\d\d\d [012]\d:[012345]\d:[012345]\d GMT
-    Last-Modified:
-      description: See [http 1.1 Last-Modified header](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29)
+      description: See [HTTP/1.1 date format](https://tools.ietf.org/html/rfc2616#section-3.3.1)
+      type: string
+      pattern: '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0123]\d (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d\d\d\d [012]\d:[012345]\d:[012345]\d GMT'
+    HTTP-date-list:
+      description: List of HTTP-dates. Format will depend on where the schema is applied.
+      type: array
+      items:
+        $ref: '#/components/schemas/HTTP-date'
+  headers:
+    ETag:
+      description: See [HTTP/1.1 ETag](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19)
         schema:
-          $ref: '#/components/parameters/HTTP-date'
-    If-Modified-Since:
-      description: See [HTTP 1.1 If-Modified-Since](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25)
+          $ref: '#/components/schemas/entity-tag'
+    Last-Modified:
+      description: See [HTTP/1.1 Last-Modified](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29)
       schema:
-        $ref: '#/components/parameters/HTTP-date'
+        $ref: '#/components/schemas/HTTP-date'
+    If-Modified-Since:
+      description: See [HTTP/1.1 If-Modified-Since](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25)
+      schema:
+        $ref: '#/components/schemas/HTTP-date'
+    If-Unmodified-Since:
+      description: See [HTTP/1.1 If-Unmodified-Since](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28)
+      schema:
+        $ref: '#/components/schemas/HTTP-date'
+    If-Range:
+      description: See [HTTP/1.1 If-Range](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28)
+      schema:
+        oneOf:
+          - $ref: '#/components/schemas/entity-tag'
+          - $ref: '#/components/schemas/HTTP-date'
+    If-Match:
+      description: See [HTTP/1.1 If-Match](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24)
+      schema:
+        oneOf:
+          - $ref: '#/components/schemas/wildcard'
+          - $ref: '#/components/schemas/HTTP-date-list'
+    If-None-Match:
+      description: See [HTTP/1.1 If-None-Match](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26)
+      schema:
+        $ref: '#/components/headers/If-Match/schema'
