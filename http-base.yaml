@@ -3,12 +3,19 @@ info:
   title: HTTP/1.1 base specifications
   description: Shared components described in HTTP/1.1
   version: 0.0.0
+paths:
+  /donotuse:
+    description: Quiets down the validator
 components:
   schemas:
     wildcard:
       description: The wildcard character
       type: string
-      pattern: : '\*'
+      pattern: '\*'
+    media-type:
+      description: See [Media Type Specifications](https://tools.ietf.org/html/rfc6838)
+      type: string
+      pattern: '\w+/[-.\w]+(?:\+[-.\w]+)?'
     entity-tag:
       description: See [HTTP/1.1 entity-tag format](https://tools.ietf.org/html/rfc2616#section-3.11)
       type: string
@@ -25,8 +32,8 @@ components:
   headers:
     ETag:
       description: See [HTTP/1.1 ETag](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19)
-        schema:
-          $ref: '#/components/schemas/entity-tag'
+      schema:
+        $ref: '#/components/schemas/entity-tag'
     Last-Modified:
       description: See [HTTP/1.1 Last-Modified](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29)
       schema:
@@ -55,3 +62,35 @@ components:
       description: See [HTTP/1.1 If-None-Match](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26)
       schema:
         $ref: '#/components/headers/If-Match/schema'
+    Link:
+      description: See [Web Linking](https://tools.ietf.org/html/rfc8288)
+      example: 'Link: <http://example.com/TheBook/chapter2>; rel="previous";title="previous chapter"'
+      schema:
+        type: array
+        items:
+          allOf:
+            - type: string
+              description: A URL target
+              pattern: '<\S+>'
+            - type: object
+              properties:
+                rel:
+                  description: >
+                    Relation type. Whitespaced list of named ((registered)
+                    [https://www.iana.org/assignments/link-relations/link-relations.xhtml] or unregistered)
+                    and extension URI relations.
+                  type: array
+                  items:
+                    type: string
+                title:
+                  description: A human-readable text describing the link.
+                  type: string
+                title*:
+                  description: >
+                    An alternate human-readable text describing the link. See [How to encode non-ascii text]
+                    (https://tools.ietf.org/html/rfc2231)
+                  type: string
+                type:
+                  description: media-type of the linked resource.
+                  type: string
+                  pattern: '\w+/[-.\w]+(?:\+[-.\w]+)?'
