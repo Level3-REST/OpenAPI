@@ -73,13 +73,12 @@ components:
         items:
           allOf:
             - type: string
-              description: A URL target
+              description: A URL target.
               pattern: "<\\S+>"
             - type: object
               properties:
                 rel:
-                  description: |
-                    Relation type. Whitespaced list of named ((registered) [https://www.iana.org/assignments/link-relations/link-relations.xhtml] or unregistered) and extension URI relations.
+                  description: Relation name. Whitespaced list of named ((registered) [https://www.iana.org/assignments/link-relations/link-relations.xhtml] or unregistered) and extension URI relations.
                   type: array
                   items:
                     type: string
@@ -87,13 +86,15 @@ components:
                   description: A human-readable text describing the link.
                   type: string
                 'title*':
-                  description: |
-                    An alternate human-readable text describing the link. See [How to encode non-ascii text] (https://tools.ietf.org/html/rfc2231)
+                  description: An alternate human-readable text describing the link. See [How to encode non-ascii text] (https://tools.ietf.org/html/rfc2231)
                   type: string
                 type:
-                  description: media-type of the linked resource.
+                  $ref: "#/components/schemas/media-type"
+                anchor:
+                  description: Anchor point in the resource.
                   type: string
-                  pattern: "\\w+/[-.\\w]+(?:\\+[-.\\w]+)?"
+              required:
+                - rel
 servers:
   - url: none
-    description: ''
+    description: Quiets down the validator
